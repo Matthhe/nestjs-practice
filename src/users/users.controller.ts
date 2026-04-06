@@ -31,20 +31,20 @@ export class UsersController {
         return this.usersService.findOne(+id)
     }
 
-    @Post() // POST /users
-    create(@Body() user: {}){ // to POST we need to read Body of the request
-        return user           // bc we need tosend that data 
+    @Post() // POST /users and there @Body have user information
+    create(@Body() user: {name: string, email: string, role: 'INTERN' | 'ENGINEER' | 'ADMIN' }){ // to POST we need to read Body of the request
+        return this.usersService.create(user) // bc we need tosend that data 
                               // 'user' here, it is what type the body is
     }
     
     @Patch(':id') // PACTH /users/:id 
-    update(@Param('id') id: string, @Body() userUpdate: {}){
-        return {id, ...userUpdate}
+    update(@Param('id') id: string, @Body() userUpdate: {name?: string, email?: string, role?: 'INTERN' | 'ENGINEER' | 'ADMIN' }){
+        return this.usersService.update(+id, userUpdate)
     }
 
     @Delete(':id') // DELETE /users/:id 
     delete(@Param('id') id: string){
-        return { id }
+        return this.usersService.delete(+id)
     }
 }
 
