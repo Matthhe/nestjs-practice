@@ -21,11 +21,6 @@ export class UsersController {
         return this.usersService.findAll(role)
     }
 
-    /*@Get('interns') // GET /users/interns
-    findAllInterns(){
-        return []
-    }*/
-
     @Get(':id') // GET /users/:id 
     findOne(@Param('id') id: string){
         return this.usersService.findOne(+id)
