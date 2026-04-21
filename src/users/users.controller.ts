@@ -1,5 +1,8 @@
-import { Body, Controller, Delete, Get, Param, Patch, Post, Query, ParseIntPipe } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Patch, Post, Query, ParseIntPipe, ValidationPipe } from '@nestjs/common';
 import { UsersService } from './users.service';
+import { CreateUserDto } from './dto/create-user.dto';
+import { UpdateUserDto } from './dto/update-user.dto'; //! Represents the user as well
+
 @Controller('users') // /users - route
 export class UsersController {
 
@@ -21,20 +24,21 @@ export class UsersController {
     }
 
     //! In this method used ParseIntPipe, which give us apportunity to not use '+' before 'id'
+    //! Also ParseIntPipe transforms string number to numeric data and also validates the request data
     @Get(':id') //* GET /users/:id 
     findOne(@Param('id', ParseIntPipe) id: number){
         return this.usersService.findOne(id)
     }
 
     @Post() //* POST /users and there @Body have user information
-    create(@Body() user: {name: string, email: string, role: 'INTERN' | 'ENGINEER' | 'ADMIN' }){ // to POST we need to read Body of the request
-        return this.usersService.create(user) // bc we need tosend that data 
+    create(@Body(ValidationPipe) CreateUserDto: CreateUserDto ){ // to POST we need to read Body of the request
+        return this.usersService.create(CreateUserDto) // bc we need tosend that data 
                               // 'user' here, it is what type the body is
     }
     
     @Patch(':id') //* PACTH /users/:id 
-    update(@Param('id', ParseIntPipe) id: number, @Body() userUpdate: {name?: string, email?: string, role?: 'INTERN' | 'ENGINEER' | 'ADMIN' }){
-        return this.usersService.update(id, userUpdate)
+    update(@Param('id', ParseIntPipe) id: number, @Body(ValidationPipe) UpdateUserDto: UpdateUserDto){
+        return this.usersService.update(id, UpdateUserDto)
     }
 
     @Delete(':id') //* DELETE /users/:id 
